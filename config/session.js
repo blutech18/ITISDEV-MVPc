@@ -17,4 +17,4 @@ const sessionConfig = {
     }
 };
 
-module.exports = sessionConfig;
+module.exports = session(sessionConfig);
