@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const GameStats = require("../models/GameStats");
-
+const Game = require("../models/Game");
+const Player = require("../models/Player");
 
 // Create new game stats
 exports.createGameStats = async (req, res) => {
@@ -79,49 +80,6 @@ exports.createGameStats = async (req, res) => {
     }
 };
 
-
-// Get game stats by gameId - returns all player stats for a specific game (useful for box scores)
-exports.getStatsByGameId = async (req, res) => {
-    try {
-        const { gameId } = req.params;
-
-        const stats = await GameStats.find({ gameId }).populate('playerId', 'fullName jerseyNumber position');
-
-        res.status(200).json({
-            success: true,
-            message: "Game stats retrieved successfully.",
-            data: stats
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Error retrieving game stats.",
-            error: error.message
-        });
-    }
-};
-
-// Get game stats by playerId - returns all game stats for a specific player (useful for player profiles and career stats)
-exports.getStatsByPlayerId = async (req, res) => {
-    try {
-        const { playerId } = req.params;
-
-        const stats = await GameStats.find({ playerId }).populate('gameId', 'gameDate opponent tournament, result, teamScore opponentScore');
-
-        res.status(200).json({
-            success: true,
-            message: "Game stats retrieved successfully.",
-            data: stats
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Error retrieving game stats.",
-            error: error.message
-        });
-    }
-};
-
 // Update game stats by ID
 exports.updateGameStats = async (req, res) => {
     try {
@@ -150,6 +108,50 @@ exports.updateGameStats = async (req, res) => {
         });
     }
 };
+
+
+// Get game stats by gameId - returns all player stats for a specific game (useful for box scores)
+exports.getStatsByGameId = async (req, res) => {
+    try {
+        const { gameId } = req.params;
+
+        const stats = await GameStats.find({ gameId }).populate('playerId', 'fullName jerseyNumber position');
+
+        res.status(200).json({
+            success: true,
+            message: "Game stats retrieved successfully.",
+            data: stats
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving game stats.",
+            error: error.message
+        });
+    }
+};
+
+// Get game stats by playerId - returns all game stats for a specific player (useful for player profiles and career stats)
+exports.getStatsByPlayerId = async (req, res) => {
+    try {
+        const { playerId } = req.params;
+
+        const stats = await GameStats.find({ playerId }).populate('gameId', 'gameDate opponent tournament, result, teamScore opponentScore').sort({ gameDate: -1 });
+
+        res.status(200).json({
+            success: true,
+            message: "Game stats retrieved successfully.",
+            data: stats
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving game stats.",
+            error: error.message
+        });
+    }
+};
+
 
 // Delete game stats by ID
 exports.deleteGameStats = async (req, res) => {
@@ -317,6 +319,12 @@ exports.getAggregatedStatsByGameId = async (req, res) => {
     }
 };
 
+
+// Get stats for a player in a specific game (returns stats for a player in a specific game, useful for box scores and player performance in a game)
+
+
+
+
 // Get aggregated stats for a player in a specific tournament (requires additional fields in Game model to filter by tournament)
 exports.getAggregatedStatsByPlayerIdAndTournament = async (req, res) => {
     try {
@@ -325,7 +333,7 @@ exports.getAggregatedStatsByPlayerIdAndTournament = async (req, res) => {
         const aggregatedStats = await GameStats.aggregate([
             {
                 $lookup: {
-                    from: "games",
+                    from: "game",
                     localField: "gameId",
                     foreignField: "_id",
                     as: "gameDetails"
@@ -374,17 +382,26 @@ exports.getAggregatedStatsByPlayerIdAndSeason = async (req, res) => {
     try {
         const { playerId, season } = req.params;
 
+        // Find all game IDs for the season
+        const games = await Game.find({ season }, { _id: 1 });
+        const gameIds = games.map(game => game._id);
+
+        if (gameIds.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No games found for this season.",
+                data: {}
+            });
+        }
+
+        // Aggregate stats for the player in those games
         const aggregatedStats = await GameStats.aggregate([
             {
-                $lookup: {
-                    from: "games",
-                    localField: "gameId",
-                    foreignField: "_id",
-                    as: "gameDetails"
+                $match: {
+                    playerId: mongoose.Types.ObjectId(playerId),
+                    gameId: { $in: gameIds }
                 }
             },
-            { $unwind: "$gameDetails" },
-            { $match: { playerId: mongoose.Types.ObjectId(playerId), "gameDetails.season": season } },
             {
                 $group: {
                     _id: "$playerId",
@@ -402,7 +419,6 @@ exports.getAggregatedStatsByPlayerIdAndSeason = async (req, res) => {
                     averageTurnovers: { $avg: "$turnovers" },
                     averageFouls: { $avg: "$fouls" },
                     averagePlusMinus: { $avg: "$plusMinus" },
-                    // Add more aggregated fields as needed
                 }
             }
         ]);
@@ -422,5 +438,187 @@ exports.getAggregatedStatsByPlayerIdAndSeason = async (req, res) => {
 };
 
 // Get top scorers in a specific season (requires additional fields in Game model to filter by season)
+exports.getTopScorersBySeason = async (req, res) => {
+    try {
+        const { season, limit = 10 } = req.params;
+
+        // Find all game IDs for the season
+        const games = await Game.find({ season }, { _id: 1 });
+        const gameIds = games.map(game => game._id);
+
+        if (gameIds.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No games found for this season.",
+                data: []
+            });
+        }
+
+        // Aggregate total points for each player in those games and sort by points
+        const topScorers = await GameStats.aggregate([
+            { $match: { gameId: { $in: gameIds } } },
+            {
+                $group: {
+                    _id: "$playerId",
+                    totalPoints: { $sum: "$points" }
+                }
+            },
+            { $sort: { totalPoints: -1 } },
+            { $limit: parseInt(limit) },
+            {
+                $lookup: {
+                    from: "player",
+                    localField: "playerId",
+                    foreignField: "_id",
+                    as: "playerDetails"
+                }
+            },
+            { $unwind: "$playerDetails" },
+            {
+                $project: {
+                    _id: 0,
+                    playerId: "$_id",
+                    fullName: "$playerDetails.fullName",
+                    totalPoints: 1
+                }
+            }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            message: "Top scorers retrieved successfully.",
+            data: topScorers
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving top scorers.",
+            error: error.message
+        });
+    }
+};
+
+// Get player performance in a specific tournament (requires additional fields in Game model to filter by tournament)
+exports.getPlayerPerformanceByTournament = async (req, res) => {
+    try {
+        const { playerId, tournament } = req.params;
+
+        const performanceStats = await GameStats.aggregate([
+            {
+                $lookup: {
+                    from: "game",
+                    localField: "gameId",
+                    foreignField: "_id",
+                    as: "gameDetails"
+                }
+            },
+            { $unwind: "$gameDetails" },
+            { $match: { playerId: mongoose.Types.ObjectId(playerId), "gameDetails.tournament": tournament } },
+            {
+                $project: {
+                    gameId: 1,
+                    points: 1,
+                    rebounds: { $add: ["$offensiveRebounds", "$defensiveRebounds"] },
+                    assists: 1,
+                    steals: 1,
+                    blocks: 1,
+                    turnovers: 1,
+                    fouls: 1,
+                    plusMinus: 1,
+                    gameDate: "$gameDetails.gameDate",
+                    opponent: "$gameDetails.opponent",
+                    result: "$gameDetails.result"
+                }
+            },
+            { $sort: { gameDate: -1 } }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            message: "Player performance for tournament retrieved successfully.",
+            data: performanceStats
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving player performance for tournament.",
+            error: error.message
+        });
+    }
+};
+
+
+// Get player performance in a specific season (requires additional fields in Game model to filter by season)
+exports.getPlayerPerformanceBySeason = async (req, res) => {
+    try {
+        const { playerId, season } = req.params;
+
+        // Find all game IDs for the season
+        const games = await Game.find({ season }, { _id: 1 });
+        const gameIds = games.map(game => game._id);
+
+        if (gameIds.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No games found for this season.",
+                data: []
+            });
+        }
+
+        const performanceStats = await GameStats.aggregate([
+            { $match: { playerId: mongoose.Types.ObjectId(playerId), gameId: { $in: gameIds } } },
+            {
+                $project: {
+                    gameId: 1,
+                    points: 1,
+                    rebounds: { $add: ["$offensiveRebounds", "$defensiveRebounds"] },
+                    assists: 1,
+                    steals: 1,
+                    blocks: 1,
+                    turnovers: 1,
+                    fouls: 1,
+                    plusMinus: 1
+                }
+            },
+            {
+                $lookup: {
+                    from: "game",
+                    localField: "gameId",
+                    foreignField: "_id",
+                    as: "gameDetails"
+                }
+            },
+            { $unwind: "$gameDetails" },
+            {
+                $project: {
+                    points: 1,
+                    rebounds: 1,
+                    assists: 1,
+                    steals: 1,
+                    blocks: 1,
+                    turnovers: 1,
+                    fouls: 1,
+                    plusMinus: 1,
+                    gameDate: "$gameDetails.gameDate",
+                    opponent: "$gameDetails.opponent",
+                    result: "$gameDetails.result"
+                }
+            },
+            { $sort: { gameDate: -1 } }
+        ]);
+
+        res.status(200).json({
+            success: true,
+            message: "Player performance for season retrieved successfully.",
+            data: performanceStats
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error retrieving player performance for season.",
+            error: error.message
+        });
+    }
+};
 
 // Additional controller functions for specific queries (e.g., top scorers in a season, player performance in a tournament, etc.) can be added here as needed.
