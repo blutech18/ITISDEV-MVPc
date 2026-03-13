@@ -43,12 +43,15 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', require('./routes/index')); // Home and general routes
-app.use('/users', require('./routes/users')); // User authentication and profile routes
-// app.use('/teams', require('./routes/teams')); // College basketball teams routes
-app.use('/players', require('./routes/players')); // Players routes
-app.use('/games', require('./routes/games')); // Games routes
-app.use('/admin', require('./routes/admin')); // Admin routes for managing teams, players, games, etc.
-app.use('/analytics', require('./routes/analytics')); // Analytics routes
+app.use('/auth', require('./routes/auth')); // Authentication routes (login, register, logout)
+app.use('/api/users', require('./routes/user')); // User authentication and profile routes
+app.use('/api/players', require('./routes/player')); // Players routes
+app.use('/api/games', require('./routes/game')); // Games routes
+app.use('/api/admin', require('./routes/admin')); // Admin routes for managing teams, players, games, etc.
+app.use('/api/analytics', require('./routes/analytics')); // Analytics routes
+app.use('/api/gameStats', require('./routes/gameStats')); // Game statistics routes
+app.use('/api/tournament', require('./routes/tournament')); // Tournament routes
+app.use('/api/gameEvents', require('./routes/gameEvents')); // Game events routes
 
 
 // 404 handler - for unmatched routes

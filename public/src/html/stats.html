@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Encoding - Green Archers Analytics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/dashboard"><i class="fas fa-basketball-ball me-2"></i>Green Archers Analytics</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><span class="nav-link" id="userDisplay"></span></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 sidebar d-none d-md-block">
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="../html/dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/players.html"><i class="fas fa-users"></i>Players</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/games.html"><i class="fas fa-calendar-alt"></i>Games</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/stats.html"><i class="fas fa-chart-bar"></i>Statistics</a></li>
+            <li class="nav-item"><a class="nav-link active" href="../html/reports.html"><i class="fas fa-file-alt"></i>Reports</a></li>
+        </ul>
+      </nav>
+
+      <main class="col-md-10 ms-auto px-4 py-4">
+        <div class="section-header">
+          <h4><i class="fas fa-chart-bar me-2"></i>Statistics Encoding</h4>
+        </div>
+
+        <!-- Game Selection -->
+        <div class="card stat-card mb-4">
+          <div class="card-body">
+            <div class="row g-3 align-items-end">
+              <div class="col-md-5">
+                <label class="form-label fw-semibold">Select Game</label>
+                <select class="form-select" id="gameSelect">
+                  <option value="">Choose a game...</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <div id="gameInfo" class="text-muted"></div>
+              </div>
+              <div class="col-md-3 text-end">
+                <button class="btn btn-dlsu" id="addStatBtn" disabled data-bs-toggle="modal" data-bs-target="#statModal">
+                  <i class="fas fa-plus me-1"></i>Add Player Stats
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Stats Table -->
+        <div class="table-container">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>MIN</th>
+                  <th>PTS</th>
+                  <th>FG</th>
+                  <th>3PT</th>
+                  <th>FT</th>
+                  <th>OREB</th>
+                  <th>DREB</th>
+                  <th>AST</th>
+                  <th>STL</th>
+                  <th>BLK</th>
+                  <th>TO</th>
+                  <th>PF</th>
+                  <th>+/-</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="statsTableBody">
+                <tr><td colspan="15" class="text-center py-4 text-muted">Select a game to view statistics</td></tr>
+              </tbody>
+              <tfoot id="statsTableFoot" class="d-none">
+                <tr class="fw-bold" style="background:var(--dlsu-gray-100);">
+                  <td>TEAM TOTALS</td>
+                  <td id="totMin">0</td>
+                  <td id="totPts">0</td>
+                  <td id="totFG">—</td>
+                  <td id="tot3PT">—</td>
+                  <td id="totFT">—</td>
+                  <td id="totOReb">0</td>
+                  <td id="totDReb">0</td>
+                  <td id="totAst">0</td>
+                  <td id="totStl">0</td>
+                  <td id="totBlk">0</td>
+                  <td id="totTO">0</td>
+                  <td id="totPF">0</td>
+                  <td id="totPM">0</td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Stat Entry Modal -->
+  <div class="modal fade" id="statModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="statModalTitle">Encode Player Statistics</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="statForm">
+          <div class="modal-body">
+            <input type="hidden" id="statId">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label fw-semibold">Player</label>
+                <select class="form-select" id="playerSelect" required>
+                  <option value="">Select player...</option>
+                </select>
+              </div>
+              <div class="col-3"><label class="form-label">Minutes</label><input type="number" class="form-control" id="minutesPlayed" min="0" max="50" value="0"></div>
+              <div class="col-3"><label class="form-label">Points</label><input type="number" class="form-control" id="points" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">FG Made</label><input type="number" class="form-control" id="fgm" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">FG Attempted</label><input type="number" class="form-control" id="fga" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">3PT Made</label><input type="number" class="form-control" id="tpm" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">3PT Attempted</label><input type="number" class="form-control" id="tpa" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">FT Made</label><input type="number" class="form-control" id="ftm" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">FT Attempted</label><input type="number" class="form-control" id="fta" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Off Reb</label><input type="number" class="form-control" id="oreb" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Def Reb</label><input type="number" class="form-control" id="dreb" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Assists</label><input type="number" class="form-control" id="assists" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Steals</label><input type="number" class="form-control" id="steals" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Blocks</label><input type="number" class="form-control" id="blocks" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Turnovers</label><input type="number" class="form-control" id="turnovers" min="0" value="0"></div>
+              <div class="col-3"><label class="form-label">Fouls</label><input type="number" class="form-control" id="fouls" min="0" max="5" value="0"></div>
+              <div class="col-3"><label class="form-label">+/-</label><input type="number" class="form-control" id="plusMinus" value="0"></div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-dlsu">Save Statistics</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    $(function () {
+      loadCurrentUser();
+      loadGames();
+      loadPlayers();
+
+      // Check URL param
+      const params = new URLSearchParams(window.location.search);
+      const preselect = params.get('gameId');
+
+      $('#logoutBtn').on('click', function (e) { e.preventDefault(); API.post('/logout').always(() => window.location.href = '/login'); });
+      $('#gameSelect').on('change', function () {
+        const id = $(this).val();
+        $('#addStatBtn').prop('disabled', !id);
+        if (id) loadGameStats(id);
+        else {
+          $('#statsTableBody').html('<tr><td colspan="15" class="text-center py-4 text-muted">Select a game</td></tr>');
+          $('#statsTableFoot').addClass('d-none');
+        }
+      });
+
+      $('#statForm').on('submit', function (e) {
+        e.preventDefault();
+        const statId = $('#statId').val();
+        const data = {
+          gameId: $('#gameSelect').val(),
+          playerId: $('#playerSelect').val(),
+          minutesPlayed: +$('#minutesPlayed').val(),
+          points: +$('#points').val(),
+          fieldGoalsMade: +$('#fgm').val(),
+          fieldGoalsAttempted: +$('#fga').val(),
+          threePointersMade: +$('#tpm').val(),
+          threePointersAttempted: +$('#tpa').val(),
+          freeThrowsMade: +$('#ftm').val(),
+          freeThrowsAttempted: +$('#fta').val(),
+          offensiveRebounds: +$('#oreb').val(),
+          defensiveRebounds: +$('#dreb').val(),
+          assists: +$('#assists').val(),
+          steals: +$('#steals').val(),
+          blocks: +$('#blocks').val(),
+          turnovers: +$('#turnovers').val(),
+          fouls: +$('#fouls').val(),
+          plusMinus: +$('#plusMinus').val()
+        };
+
+        const promise = statId ? API.put(`/gamestats/${statId}`, data) : API.post('/gamestats', data);
+        promise.done(function () {
+          bootstrap.Modal.getInstance(document.getElementById('statModal')).hide();
+          showToast(statId ? 'Stats updated' : 'Stats saved');
+          loadGameStats($('#gameSelect').val());
+        }).fail(function (xhr) { showToast(xhr.responseJSON?.error || 'Error', 'error'); });
+      });
+
+      $('#statModal').on('hidden.bs.modal', function () {
+        $('#statForm')[0].reset();
+        $('#statId').val('');
+        $('#statModalTitle').text('Encode Player Statistics');
+      });
+
+      function loadGames() {
+        API.get('/games').done(function (games) {
+          const opts = games.map(g => `<option value="${g._id}">${formatDate(g.gameDate)} vs ${g.opponent} (${g.gameType?.name}) [${g.status}]</option>`);
+          $('#gameSelect').append(opts.join(''));
+          if (preselect) { $('#gameSelect').val(preselect).trigger('change'); }
+        });
+      }
+    });
+
+    function loadCurrentUser() {
+      API.get('/auth/me').done(function (user) {
+        $('#userDisplay').html(`<i class="fas fa-user me-1"></i>${user.firstName} ${user.lastName}`);
+      });
+    }
+
+    function loadPlayers() {
+      API.get('/players?status=Active').done(function (players) {
+        const opts = players.map(p => `<option value="${p._id}">#${p.jerseyNumber} ${p.firstName} ${p.lastName}</option>`);
+        $('#playerSelect').append(opts.join(''));
+      });
+    }
+
+    function loadGameStats(gameId) {
+      API.get(`/gamestats/game/${gameId}`).done(function (stats) {
+        if (!stats.length) {
+          $('#statsTableBody').html('<tr><td colspan="15" class="text-center py-4 text-muted">No stats encoded yet</td></tr>');
+          $('#statsTableFoot').addClass('d-none');
+          return;
+        }
+
+        let totals = { min:0, pts:0, fgm:0, fga:0, tpm:0, tpa:0, ftm:0, fta:0, oreb:0, dreb:0, ast:0, stl:0, blk:0, to:0, pf:0, pm:0 };
+
+        const html = stats.map(s => {
+          const p = s.playerId;
+          totals.min += s.minutesPlayed; totals.pts += s.points;
+          totals.fgm += s.fieldGoalsMade; totals.fga += s.fieldGoalsAttempted;
+          totals.tpm += s.threePointersMade; totals.tpa += s.threePointersAttempted;
+          totals.ftm += s.freeThrowsMade; totals.fta += s.freeThrowsAttempted;
+          totals.oreb += s.offensiveRebounds; totals.dreb += s.defensiveRebounds;
+          totals.ast += s.assists; totals.stl += s.steals; totals.blk += s.blocks;
+          totals.to += s.turnovers; totals.pf += s.fouls; totals.pm += s.plusMinus;
+
+          return `<tr>
+            <td><strong>#${p?.jerseyNumber || '?'}</strong> ${p?.firstName || ''} ${p?.lastName || ''}</td>
+            <td>${s.minutesPlayed}</td><td><strong>${s.points}</strong></td>
+            <td>${s.fieldGoalsMade}/${s.fieldGoalsAttempted}</td>
+            <td>${s.threePointersMade}/${s.threePointersAttempted}</td>
+            <td>${s.freeThrowsMade}/${s.freeThrowsAttempted}</td>
+            <td>${s.offensiveRebounds}</td><td>${s.defensiveRebounds}</td>
+            <td>${s.assists}</td><td>${s.steals}</td><td>${s.blocks}</td>
+            <td>${s.turnovers}</td><td>${s.fouls}</td><td>${s.plusMinus > 0 ? '+' : ''}${s.plusMinus}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-dlsu me-1" onclick="editStat('${s._id}', ${JSON.stringify(s).replace(/"/g, '&quot;')})"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteStat('${s._id}')"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
+        }).join('');
+
+        $('#statsTableBody').html(html);
+        $('#statsTableFoot').removeClass('d-none');
+        $('#totMin').text(totals.min); $('#totPts').text(totals.pts);
+        $('#totFG').text(`${totals.fgm}/${totals.fga}`); $('#tot3PT').text(`${totals.tpm}/${totals.tpa}`);
+        $('#totFT').text(`${totals.ftm}/${totals.fta}`);
+        $('#totOReb').text(totals.oreb); $('#totDReb').text(totals.dreb);
+        $('#totAst').text(totals.ast); $('#totStl').text(totals.stl); $('#totBlk').text(totals.blk);
+        $('#totTO').text(totals.to); $('#totPF').text(totals.pf);
+        $('#totPM').text(totals.pm > 0 ? '+' + totals.pm : totals.pm);
+      });
+    }
+
+    function editStat(id, s) {
+      $('#statId').val(id);
+      $('#playerSelect').val(s.playerId?._id || s.playerId);
+      $('#minutesPlayed').val(s.minutesPlayed);
+      $('#points').val(s.points);
+      $('#fgm').val(s.fieldGoalsMade); $('#fga').val(s.fieldGoalsAttempted);
+      $('#tpm').val(s.threePointersMade); $('#tpa').val(s.threePointersAttempted);
+      $('#ftm').val(s.freeThrowsMade); $('#fta').val(s.freeThrowsAttempted);
+      $('#oreb').val(s.offensiveRebounds); $('#dreb').val(s.defensiveRebounds);
+      $('#assists').val(s.assists); $('#steals').val(s.steals);
+      $('#blocks').val(s.blocks); $('#turnovers').val(s.turnovers);
+      $('#fouls').val(s.fouls); $('#plusMinus').val(s.plusMinus);
+      $('#statModalTitle').text('Edit Player Statistics');
+      new bootstrap.Modal(document.getElementById('statModal')).show();
+    }
+
+    async function deleteStat(id) {
+      if (await confirmAction('Delete this stat line?')) {
+        API.delete(`/gamestats/${id}`).done(function () {
+          showToast('Stats deleted');
+          loadGameStats($('#gameSelect').val());
+        });
+      }
+    }
+  </script>
+</body>
+</html>

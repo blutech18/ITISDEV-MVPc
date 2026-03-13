@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Players - Green Archers Analytics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/dashboard"><i class="fas fa-basketball-ball me-2"></i>Green Archers Analytics</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><span class="nav-link" id="userDisplay"></span></li>
+          <li class="nav-item"><a class="nav-link" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-1"></i>Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav class="col-md-2 sidebar d-none d-md-block">
+        <ul class="nav flex-column">
+            <li class="nav-item"><a class="nav-link" href="../html/dashboard.html"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/players.html"><i class="fas fa-users"></i>Players</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/games.html"><i class="fas fa-calendar-alt"></i>Games</a></li>
+            <li class="nav-item"><a class="nav-link" href="../html/stats.html"><i class="fas fa-chart-bar"></i>Statistics</a></li>
+            <li class="nav-item"><a class="nav-link active" href="../html/reports.html"><i class="fas fa-file-alt"></i>Reports</a></li>
+        </ul>
+      </nav>
+
+      <main class="col-md-10 ms-auto px-4 py-4">
+        <div class="section-header">
+          <h4><i class="fas fa-users me-2"></i>Player Roster</h4>
+          <div class="d-flex gap-2">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search players..." style="width:200px;">
+            <select id="statusFilter" class="form-select" style="width:auto;">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Injured">Injured</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <button class="btn btn-dlsu" id="addPlayerBtn" data-bs-toggle="modal" data-bs-target="#playerModal">
+              <i class="fas fa-plus me-1"></i>Add Player
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Height</th>
+                <th>Weight</th>
+                <th>Year</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="playersTableBody">
+              <tr><td colspan="8" class="text-center py-4">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Player Modal -->
+  <div class="modal fade" id="playerModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="playerModalTitle">Add Player</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="playerForm">
+          <div class="modal-body">
+            <input type="hidden" id="playerId">
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" id="firstName" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="lastName" required>
+              </div>
+              <div class="col-4">
+                <label class="form-label">Jersey #</label>
+                <input type="number" class="form-control" id="jerseyNumber" required min="0" max="99">
+              </div>
+              <div class="col-8">
+                <label class="form-label">Position</label>
+                <select class="form-select" id="position" required>
+                  <option value="">Select</option>
+                  <option>Point Guard</option>
+                  <option>Shooting Guard</option>
+                  <option>Small Forward</option>
+                  <option>Power Forward</option>
+                  <option>Center</option>
+                  <option>Guard</option>
+                  <option>Forward</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Height</label>
+                <input type="text" class="form-control" id="height" placeholder="e.g. 6'2&quot;">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Weight (lbs)</label>
+                <input type="number" class="form-control" id="weight">
+              </div>
+              <div class="col-6">
+                <label class="form-label">Year Level</label>
+                <select class="form-select" id="yearLevel">
+                  <option value="">Select</option>
+                  <option>1st Year</option>
+                  <option>2nd Year</option>
+                  <option>3rd Year</option>
+                  <option>4th Year</option>
+                  <option>5th Year</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="status">
+                  <option>Active</option>
+                  <option>Injured</option>
+                  <option>Inactive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-dlsu">Save Player</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script>
+    $(function () {
+      loadPlayers();
+      loadCurrentUser();
+
+      $('#logoutBtn').on('click', function (e) { e.preventDefault(); API.post('/logout').always(() => window.location.href = '/login'); });
+      $('#searchInput').on('input', loadPlayers);
+      $('#statusFilter').on('change', loadPlayers);
+
+      $('#playerForm').on('submit', function (e) {
+        e.preventDefault();
+        const id = $('#playerId').val();
+        const data = {
+          firstName: $('#firstName').val(),
+          lastName: $('#lastName').val(),
+          jerseyNumber: parseInt($('#jerseyNumber').val()),
+          position: $('#position').val(),
+          height: $('#height').val(),
+          weight: parseInt($('#weight').val()) || undefined,
+          yearLevel: $('#yearLevel').val(),
+          status: $('#status').val()
+        };
+
+        const promise = id ? API.put(`/players/${id}`, data) : API.post('/players', data);
+        promise.done(function () {
+          bootstrap.Modal.getInstance(document.getElementById('playerModal')).hide();
+          showToast(id ? 'Player updated' : 'Player added');
+          loadPlayers();
+        }).fail(function (xhr) {
+          showToast(xhr.responseJSON?.error || 'Error saving player', 'error');
+        });
+      });
+
+      $('#playerModal').on('hidden.bs.modal', function () {
+        $('#playerForm')[0].reset();
+        $('#playerId').val('');
+        $('#playerModalTitle').text('Add Player');
+      });
+    });
+
+    function loadCurrentUser() {
+      API.get('/auth/me').done(function (user) {
+        $('#userDisplay').html(`<i class="fas fa-user me-1"></i>${user.firstName} ${user.lastName}`);
+        if (user.role !== 'Admin') {
+          $('#addPlayerBtn').hide();
+          $('.action-btns').hide();
+        }
+      });
+    }
+
+    function loadPlayers() {
+      const search = $('#searchInput').val();
+      const status = $('#statusFilter').val();
+      let url = '/players?';
+      if (search) url += `search=${encodeURIComponent(search)}&`;
+      if (status) url += `status=${encodeURIComponent(status)}`;
+
+      API.get(url).done(function (players) {
+        if (!players.length) {
+          $('#playersTableBody').html('<tr><td colspan="8" class="text-center py-4 text-muted">No players found</td></tr>');
+          return;
+        }
+        const html = players.map(p => {
+          const statusBadge = p.status === 'Active' ? 'badge-active' : p.status === 'Injured' ? 'badge-injured' : 'badge-inactive';
+          return `<tr>
+            <td><strong>${p.jerseyNumber}</strong></td>
+            <td>${p.firstName} ${p.lastName}</td>
+            <td>${p.position}</td>
+            <td>${p.height || '—'}</td>
+            <td>${p.weight || '—'}</td>
+            <td>${p.yearLevel || '—'}</td>
+            <td><span class="badge ${statusBadge}">${p.status}</span></td>
+            <td class="action-btns">
+              <button class="btn btn-sm btn-outline-dlsu me-1" onclick="editPlayer('${p._id}')"><i class="fas fa-edit"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deletePlayer('${p._id}')"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
+        }).join('');
+        $('#playersTableBody').html(html);
+      });
+    }
+
+    function editPlayer(id) {
+      API.get(`/players/${id}`).done(function (p) {
+        $('#playerId').val(p._id);
+        $('#firstName').val(p.firstName);
+        $('#lastName').val(p.lastName);
+        $('#jerseyNumber').val(p.jerseyNumber);
+        $('#position').val(p.position);
+        $('#height').val(p.height);
+        $('#weight').val(p.weight);
+        $('#yearLevel').val(p.yearLevel);
+        $('#status').val(p.status);
+        $('#playerModalTitle').text('Edit Player');
+        new bootstrap.Modal(document.getElementById('playerModal')).show();
+      });
+    }
+
+    async function deletePlayer(id) {
+      if (await confirmAction('Delete this player?')) {
+        API.delete(`/players/${id}`).done(function () {
+          showToast('Player deleted');
+          loadPlayers();
+        });
+      }
+    }
+  </script>
+</body>
+</html>

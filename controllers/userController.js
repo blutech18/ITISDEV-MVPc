@@ -222,3 +222,32 @@ exports.deactivateUserAccount = async (req, res) => {
         });
     }
 };
+
+
+// Admin - Reactivate user account by changing status
+exports.reactivateUserAccount = async (req, res) => {
+    try {
+        const { userId } = req.params; // Get user ID from request parameters
+        const updatedUser = await User.findByIdAndUpdate(
+            userId, 
+            { status: 'Active' }, 
+            { new: true }
+        ).select('-password').lean(); // Exclude password field
+
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ 
+            success: true, 
+            message: 'User account reactivated successfully', 
+            data: updatedUser 
+        });
+    } catch (error) {
+        console.error("Reactivate User Account Error: ", error)
+        res.status(500).json({ 
+            message: 'Error reactivating user account', 
+            error: error.message 
+        });
+    }
+};

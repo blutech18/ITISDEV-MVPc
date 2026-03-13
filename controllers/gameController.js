@@ -162,8 +162,8 @@ exports.getGamesBySeason = async (req, res) => {
 // Get Games by Opponent - returns all games against a specific opponent, sorted by date (newest first)
 exports.getGamesByOpponent = async (req, res) => {
     try {
-        const opponent = req.params.opponent; // Get opponent from URL parameters
-        const games = await Game.find({ opponent: opponent }).sort({ gameDate: -1 }).lean();
+        const opponentTeam = req.params.opponentTeam; // Get opponent from URL parameters
+        const games = await Game.find({ opponent: opponentTeam }).sort({ gameDate: -1 }).lean();
 
         res.status(200).json({
             success: true,

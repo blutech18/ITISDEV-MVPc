@@ -1,3 +1,4 @@
+const { emit } = require("../app");
 const User = require("../models/User");
 
 // Login a user
@@ -64,4 +65,32 @@ exports.logoutUser = async (req, res) => {
             message: "Logged out successfully"
         });
     });
+};
+
+// Get current logged in user details
+exports.getCurrentUser = async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+        const user = await User.findById(req.session.user.id).lean();
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({
+            user: {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                username: user.username,
+                email: user.email,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to retrieve user", error: error.message });
+    }
 };
