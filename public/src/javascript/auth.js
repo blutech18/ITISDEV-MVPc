@@ -23,7 +23,7 @@ $(function () {
             success: function (res) {
                 if (res.message === 'Login successful') {
                     // Redirect to dashboard or home page after successful login
-                    window.location.href = '/admin/dashboard';
+                    window.location.href = '/';
                 } else {
                     $('#loginAlert').text(res.message).removeClass('d-none');
                 }
@@ -36,7 +36,7 @@ $(function () {
     });
 
     // handle logout button click
-    $('#logoutBtn').on('click', function (e) {
+    $('#logoutBtn, #logoutBtn2').on('click', function (e) {
         e.preventDefault();
         $.ajax({
             url: '/auth/logout',

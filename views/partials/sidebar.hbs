@@ -1,39 +1,62 @@
 <!-- Sidebar -->
-<nav class="col-md-2 sidebar d-none d-md-block">
-    <div class="container-fluid">
-        <!-- Side Bar toggler -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sideBarToggle" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<div class="collapse d-md-block col-md-2 sidebar" id="sideBarToggle">
+    <ul class="nav flex-column">
+        <!-- User Account Dropdown for Mobile -->
+        <li class="nav-item d-md-none">
+            <div class="dropdown w-100">
+                <button class="nav-link dropdown-toggle w-100 text-start" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle me-2"></i>
+                    {{#if user}}
+                        <span>{{user.firstName}}</span>
+                    {{else}}
+                        <span>Account</span>
+                    {{/if}}
+                </button>
+                <ul class="dropdown-menu w-100">
+                   {{#if user}}
+                        <li class="profile">
+                            <a class="dropdown-item" href="/api/users/profile">Profile</a>
+                        </li>
+                        <li class="logout"> 
+                            <button type="submit" id="logoutBtn2" class="dropdown-item">Sign Out</button>
+                        </li>
+                    {{else}}
+                        <li class="login">
+                            <form id="loginForm" action="/auth/login" method="GET">
+                            <button type="submit" id="loginBtn" class="dropdown-item">Sign In</button>
+                            </form>
+                        </li>
+                    {{/if}}
+                </ul>
+            </div>
+        </li>
 
-        <div class="collapse navbar-collapse" id="sideBarToggle">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link" href="../html/dashboard.html">
-                        <i class="fas fa-tachometer-alt"></i>Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../html/players.html">
-                        <i class="fas fa-users"></i>Players
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../html/games.html">
-                        <i class="fas fa-calendar-alt"></i>Games
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../html/stats.html">
-                        <i class="fas fa-chart-bar"></i>Statistics
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="../html/reports.html">
-                        <i class="fas fa-file-alt"></i>Reports
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+        <li class="nav-item">
+            <a class="nav-link" href="../html/dashboard.html">
+                <i class="fas fa-tachometer-alt"></i>Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../html/players.html">
+                <i class="fas fa-users"></i>Players
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../html/games.html">
+                <i class="fas fa-calendar-alt"></i>Games
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="../html/stats.html">
+                <i class="fas fa-chart-bar"></i>Statistics
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="../html/reports.html">
+                <i class="fas fa-file-alt"></i>Reports
+            </a>
+        </li>
+    </ul>
+</div>
+
+

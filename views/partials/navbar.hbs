@@ -1,17 +1,23 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
+
+       <!-- Side Bar toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sideBarToggle" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
         <div class="logo">
             <a class="navbar-brand" href="/">
-                <img src="../../public/assets/images/logo/maxresdefault.jpg" alt="Logo">
+                <img src="/assets/images/logo/lglogo.png" alt="Logo">
             </a>
         </div>
 
         <a class="navbar-brand" href="../html/dashboard.html">
-            <i class="fas fa-basketball-ball me-2"></i>Green Archers Analytics
+          Green Archers Analytics
         </a>
 
-
-        <div class="dropdown ms-3">
+        <!-- User Account Dropdown -->
+        <div class="dropdown ms-3 d-none d-md-block">
           <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi bi-person-circle fs-5 me-1"></i>
             {{#if user}}
