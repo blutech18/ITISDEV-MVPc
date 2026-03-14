@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Archers Analytics - Games</title>
+
+<link rel="stylesheet" href="../css/admin-games.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <i class="fa-solid fa-basketball"></i> Green Archers Analytics
+  </div>
+  <div class="header-right">
+    <i class="fa-solid fa-user"></i> Logout
+  </div>
+</header>
+
+<div class="layout">
+
+    <!-- SIDEBAR -->
+
+<aside class="sidebar">
+  <ul>
+    <li><a href="admin-dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a href="player-admin.html"><i class="fa-solid fa-users"></i> Players</a></li>
+    <li><a href="admin-games.html"><i class="fa-solid fa-calendar"></i> Games</a></li>
+    <li><a href="statistics-encoding.html"><i class="fa-solid fa-chart-column"></i> Statistics</a></li>
+    <li><a href="reports-admin.html"><i class="fa-solid fa-file"></i> Reports</a></li>
+  </ul>
+</aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <div class="dashboard-header">
+            <h2>Game Schedule</h2>
+            <div class="controls">
+                <input type="text" class="search" placeholder="Search opponent">
+                <select class="status-filter">
+                    <option value="">All Status</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Completed">Completed</option>
+                </select>
+                <select class="type-filter">
+                    <option value="">All Types</option>
+                    <option value="League">UAAP</option>
+                    <option value="Friendly">Preseason</option>
+                    <option value="Friendly">Tune-up</option>
+
+                </select>
+                <button class="add-game">
+                    <i class="fa-solid fa-plus"></i> Add Game
+                </button>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="games-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>DATE</th>
+                        <th>OPPONENT</th>
+                        <th>TYPE</th>
+                        <th>VENUE</th>
+                        <th>SCORE</th>
+                        <th>RESULT</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="gamesTableBody">
+                    <tr>
+                        <td colspan="9" style="text-align:center;padding:20px;">
+                            No games yet
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="gameModal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3 id="modalTitle">Add Game</h3>
+        <form id="gameForm">
+            <input type="date" id="date" required>
+            <input type="text" id="opponent" placeholder="Opponent" required>
+            <select id="type">
+                <option value="League">League</option>
+                <option value="Friendly">Friendly</option>
+            </select>
+            <input type="text" id="venue" placeholder="Venue">
+            <div class="form-row">
+                <input type="number" id="teamScore" placeholder="Team Score">
+                <input type="number" id="oppScore" placeholder="Opponent Score">
+            </div>
+            <select id="status">
+                <option value="Scheduled">Scheduled</option>
+                <option value="Completed">Completed</option>
+            </select>
+            <button type="submit" id="saveGameBtn">Save Game</button>
+        </form>
+    </div>
+</div>
+
+<!-- JS -->
+<script src="../javascript/admin-games.js"></script>
+
+</body>
+</html>

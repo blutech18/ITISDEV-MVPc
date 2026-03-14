@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Green Archers Analytics - Statistics Encoding</title>
+<link rel="stylesheet" href="../css/statistics-encoding.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <i class="fa-solid fa-basketball"></i> Green Archers Analytics
+  </div>
+  <div class="header-right">
+    <i class="fa-solid fa-user"></i> Logout
+  </div>
+</header>
+
+<div class="layout">
+
+
+<aside class="sidebar">
+  <ul>
+    <li><a href="admin-dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a href="player-admin.html"><i class="fa-solid fa-users"></i> Players</a></li>
+    <li><a href="admin-games.html"><i class="fa-solid fa-calendar"></i> Games</a></li>
+    <li><a href="statistics-encoding.html"><i class="fa-solid fa-chart-column"></i> Statistics</a></li>
+    <li><a href="reports-admin.html"><i class="fa-solid fa-file"></i> Reports</a></li>
+  </ul>
+</aside>
+
+  <main class="main">
+
+    <div class="dashboard-header">
+      <h2>Statistics Encoding</h2>
+    </div>
+
+    <section class="controls-section">
+      <label for="gameSelect" class="control-label">Select Game</label>
+      <select id="gameSelect">
+        <option value="">Choose a game...</option>
+        <!-- Populate with JS -->
+      </select>
+      <button id="addStatsBtn" disabled><i class="fa-solid fa-plus"></i> Add Player Stats</button>
+    </section>
+
+    <div class="table-container">
+      <table class="stats-table">
+        <thead>
+          <tr>
+            <th>PLAYER</th>
+            <th>MIN</th>
+            <th>PTS</th>
+            <th>FG</th>
+            <th>3PT</th>
+            <th>FT</th>
+            <th>OREB</th>
+            <th>DREB</th>
+            <th>AST</th>
+            <th>STL</th>
+            <th>BLK</th>
+            <th>TO</th>
+            <th>PF</th>
+            <th>+/-</th>
+            <th>ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="statsTableBody">
+          <tr><td colspan="15" style="text-align:center; padding:20px;">Select a game to view statistics</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script src="../js/statistics-encoding.js" defer></script>
+
+</body>
+</html>

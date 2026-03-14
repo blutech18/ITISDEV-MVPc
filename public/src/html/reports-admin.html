@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Archers Analytics - Reports</title>
+
+<link rel="stylesheet" href="../css/reports-admin.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <i class="fa-solid fa-basketball"></i> Green Archers Analytics
+  </div>
+  <div class="header-right">
+    <i class="fa-solid fa-user"></i> Logout
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+  <ul>
+    <li><a href="admin-dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a href="player-admin.html"><i class="fa-solid fa-users"></i> Players</a></li>
+    <li><a href="admin-games.html"><i class="fa-solid fa-calendar"></i> Games</a></li>
+    <li><a href="statistics-encoding.html"><i class="fa-solid fa-chart-column"></i> Statistics</a></li>
+    <li><a href="reports-admin.html"><i class="fa-solid fa-file"></i> Reports</a></li>
+  </ul>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<div class="report-header">
+
+<h2>Player Analytics Report</h2>
+
+<select id="playerSelect">
+    <option value="">Select a player...</option>
+    <option>John Doe</option>
+    <option>Jane Smith</option>
+    <option>Mark Brown</option>
+</select>
+
+</div>
+
+
+<div class="report-grid">
+
+<!-- CHART -->
+<div class="report-card">
+    <h3><i class="fa-solid fa-chart-line"></i> Points Per Game Trend</h3>
+
+    <div class="chart-container">
+        <canvas id="ppgChart"></canvas>
+    </div>
+
+</div>
+
+<!-- ADDITIONAL STATS -->
+<div class="report-card stats-card">
+
+<h3>Additional Stats (Per Game)</h3>
+
+<div class="stats-content" id="statsBox">
+    <p>Select a player to view</p>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- GAME LOG -->
+<div class="game-log">
+
+<h3><i class="fa-solid fa-list"></i> Game Log</h3>
+
+<table>
+
+<thead>
+<tr>
+<th>DATE</th>
+<th>OPPONENT</th>
+<th>RESULT</th>
+<th>MIN</th>
+<th>PTS</th>
+<th>FG</th>
+<th>3PT</th>
+<th>FT</th>
+<th>REB</th>
+<th>AST</th>
+<th>STL</th>
+<th>BLK</th>
+<th>TO</th>
+<th>+/-</th>
+</tr>
+</thead>
+
+<tbody id="gameLogBody">
+<tr>
+    <td colspan="14" class="empty-row">
+        Select a player to view game log
+    </td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</main>
+</div>
+
+<script src="../../../routes/js/reports-admin.js"></script>
+
+</body>
+</html>

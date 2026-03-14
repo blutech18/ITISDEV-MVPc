@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Archers Analytics - Players</title>
+
+<link rel="stylesheet" href="../css/player-admin.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+/* Modal background */
+.modal {
+  display:none;
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+  z-index:1000;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Modal box */
+.modal-content {
+  background:#fff;
+  padding:30px 25px;
+  border-radius:12px;
+  width:420px;
+  max-width:90%;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.2);
+  position:relative;
+  transform: translateY(-30px);
+  animation: slideIn 0.3s forwards;
+}
+
+/* Modal title */
+.modal-content h3 {
+  font-size:20px;
+  font-weight:600;
+  color:#0b5d3b;
+  margin-bottom:15px;
+  text-align:center;
+}
+
+/* Close button */
+.modal-content .close {
+  position:absolute;
+  top:15px; right:20px;
+  cursor:pointer;
+  font-size:24px;
+  color:#888;
+  transition: color 0.2s;
+}
+.modal-content .close:hover {
+  color:#0b5d3b;
+}
+
+/* Form group for floating labels */
+.form-group {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+}
+
+.form-group input,
+.form-group select {
+  padding:12px 12px 12px 12px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  font-size:14px;
+  outline:none;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color:#0b5d3b;
+  box-shadow:0 0 6px rgba(11,93,59,0.3);
+}
+
+/* Floating label effect */
+.form-group label {
+  position:absolute;
+  left:12px;
+  top:12px;
+  color:#aaa;
+  font-size:14px;
+  pointer-events:none;
+  transition: 0.2s ease all;
+  background:white;
+  padding:0 4px;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label,
+.form-group select:focus + label,
+.form-group select:not([value=""]) + label {
+  top:-8px;
+  left:8px;
+  font-size:12px;
+  color:#0b5d3b;
+}
+
+/* Submit button */
+#savePlayerBtn {
+  margin-top:10px;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#0b5d3b;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition: background 0.2s;
+}
+
+#savePlayerBtn:hover {
+  background:#084b2f;
+}
+
+/* Animations */
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+@keyframes slideIn { from {transform: translateY(-30px);} to {transform: translateY(0);} }
+
+/* Responsive */
+@media (max-width: 500px){
+  .modal-content { width:90%; padding:20px; }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <i class="fa-solid fa-basketball"></i> Green Archers Analytics
+  </div>
+  <div class="header-right">
+    <i class="fa-solid fa-user"></i> Logout
+  </div>
+</header>
+
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+  <ul>
+    <li><a href="admin-dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a href="player-admin.html"><i class="fa-solid fa-users"></i> Players</a></li>
+    <li><a href="admin-games.html"><i class="fa-solid fa-calendar"></i> Games</a></li>
+    <li><a href="statistics-encoding.html"><i class="fa-solid fa-chart-column"></i> Statistics</a></li>
+    <li><a href="reports-admin.html"><i class="fa-solid fa-file"></i> Reports</a></li>
+  </ul>
+</aside>
+
+
+<!-- MAIN CONTENT -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="dashboard-header">
+    <h2><i class="fa-solid fa-users"></i> Player Roster</h2>
+
+    <div class="controls">
+      <input type="text" placeholder="Search players..." class="search">
+      <select class="status-filter">
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+      <button class="add-player">
+        <i class="fa-solid fa-plus"></i> Add Player
+      </button>
+    </div>
+  </div>
+
+  <!-- PLAYER TABLE -->
+  <div class="table-container">
+    <table class="player-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>NAME</th>
+          <th>POSITION</th>
+          <th>HEIGHT</th>
+          <th>WEIGHT</th>
+          <th>YEAR</th>
+          <th>STATUS</th>
+          <th>ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody id="playerTableBody">
+        <tr>
+          <td colspan="8" style="text-align:center;padding:20px;">
+            Loading...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Handlebars template -->
+    <script id="player-row-template" type="text/x-handlebars-template">
+      {{#each players}}
+        <tr data-id="{{id}}">
+          <td>{{@index}}</td>
+          <td>{{name}}</td>
+          <td>{{position}}</td>
+          <td>{{height}}</td>
+          <td>{{weight}}</td>
+          <td>{{year}}</td>
+          <td>{{status}}</td>
+          <td>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+          </td>
+        </tr>
+      {{/each}}
+    </script>
+  </div>
+
+</main>
+
+</div>
+
+<!-- Player Form Modal -->
+<div class="modal" id="playerModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3 id="modalTitle">Add Player</h3>
+    <form id="playerForm">
+
+      <div class="form-group">
+        <input type="text" id="name" placeholder=" " required>
+        <label for="name">Full Name</label>
+      </div>
+
+      <div class="form-group">
+        <input type="text" id="position" placeholder=" " required>
+        <label for="position">Position</label>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" id="height" placeholder=" " required>
+          <label for="height">Height</label>
+        </div>
+        <div class="form-group">
+          <input type="text" id="weight" placeholder=" " required>
+          <label for="weight">Weight</label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <input type="text" id="year" placeholder=" " required>
+          <label for="year">Year</label>
+        </div>
+        <div class="form-group">
+          <select id="status" required>
+            <option value="" disabled selected>Select Status</option>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <label for="status">Status</label>
+        </div>
+      </div>
+
+      <button type="submit" id="savePlayerBtn">Save Player</button>
+    </form>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+
+<script>
+// Sidebar active
+const currentPage = window.location.pathname.split("/").pop();
+const sidebarLinks = document.querySelectorAll(".sidebar a");
+sidebarLinks.forEach(link => {
+  link.classList.remove("active");
+  const linkPage = link.getAttribute("href").split("/").pop();
+  if(linkPage === currentPage){
+    link.classList.add("active");
+  }
+});
+
+// CRUD Logic
+let players = [];
+let editingId = null;
+
+// DOM references
+const addPlayerBtn = document.querySelector('.add-player');
+const modal = document.getElementById('playerModal');
+const closeModal = modal.querySelector('.close');
+const playerForm = document.getElementById('playerForm');
+const playerTableBody = document.getElementById('playerTableBody');
+const modalTitle = document.getElementById('modalTitle');
+const searchInput = document.querySelector('.search');
+const statusFilter = document.querySelector('.status-filter');
+
+// Handlebars template
+const source = document.getElementById('player-row-template').innerHTML;
+const template = Handlebars.compile(source);
+
+// Open modal
+addPlayerBtn.addEventListener('click', () => {
+  editingId = null;
+  modalTitle.textContent = "Add Player";
+  playerForm.reset();
+  modal.style.display = "flex";
+});
+
+// Close modal
+closeModal.addEventListener('click', () => modal.style.display = "none");
+
+// Submit form
+playerForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const playerData = {
+    id: editingId || Date.now(),
+    name: document.getElementById('name').value,
+    position: document.getElementById('position').value,
+    height: document.getElementById('height').value,
+    weight: document.getElementById('weight').value,
+    year: document.getElementById('year').value,
+    status: document.getElementById('status').value
+  };
+
+  if(editingId) {
+    // Edit existing player
+    players = players.map(p => p.id === editingId ? playerData : p);
+  } else {
+    // Add new player
+    players.push(playerData);
+  }
+
+  renderPlayers();
+  modal.style.display = "none";
+});
+
+// Render players
+function renderPlayers() {
+  // Apply filters
+  let filteredPlayers = players.filter(p => {
+    const searchText = searchInput.value.toLowerCase();
+    const statusText = statusFilter.value;
+    const matchesName = p.name.toLowerCase().includes(searchText);
+    const matchesStatus = statusText === "" || p.status === statusText;
+    return matchesName && matchesStatus;
+  });
+
+  if(filteredPlayers.length === 0){
+    playerTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">No players found</td></tr>`;
+    return;
+  }
+  playerTableBody.innerHTML = template({players: filteredPlayers});
+  attachRowEvents();
+}
+
+// Edit/Delete buttons
+function attachRowEvents() {
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const row = e.target.closest('tr');
+      const id = Number(row.dataset.id);
+      const player = players.find(p => p.id === id);
+      editingId = id;
+
+      document.getElementById('name').value = player.name;
+      document.getElementById('position').value = player.position;
+      document.getElementById('height').value = player.height;
+      document.getElementById('weight').value = player.weight;
+      document.getElementById('year').value = player.year;
+      document.getElementById('status').value = player.status;
+
+      modalTitle.textContent = "Edit Player";
+      modal.style.display = "flex";
+    });
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const row = e.target.closest('tr');
+      const id = Number(row.dataset.id);
+      players = players.filter(p => p.id !== id);
+      renderPlayers();
+    });
+  });
+}
+
+// Search & filter events
+searchInput.addEventListener('input', renderPlayers);
+statusFilter.addEventListener('change', renderPlayers);
+
+// Initial render
+renderPlayers();
+</script>
+
+</body>
+</html>

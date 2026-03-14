@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Green Archers Analytics</title>
+<link rel="stylesheet" href="../css/admin-dashboard.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="logo">
+    <i class="fa-solid fa-basketball"></i> Green Archers Analytics
+  </div>
+  <div class="header-right">
+    <i class="fa-solid fa-user"></i> Logout
+  </div>
+</header>
+
+<div class="layout">
+
+<aside class="sidebar">
+  <ul>
+    <li><a href="admin-dashboard.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+    <li><a href="player-admin.html"><i class="fa-solid fa-users"></i> Players</a></li>
+    <li><a href="admin-games.html"><i class="fa-solid fa-calendar"></i> Games</a></li>
+    <li><a href="statistics-encoding.html"><i class="fa-solid fa-chart-column"></i> Statistics</a></li>
+    <li><a href="reports-admin.html"><i class="fa-solid fa-file"></i> Reports</a></li>
+  </ul>
+</aside>
+
+<main class="main">
+
+  <!-- HEADER ROW -->
+  <div class="dashboard-header">
+    <h2><i class="fa-solid fa-gauge"></i> Dashboard</h2>
+    <select class="season"><option>All Seasons</option></select>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="stats">
+    <div class="card"><div><p>GAMES PLAYED</p><h3>0</h3></div><i class="fa-solid fa-basketball icon"></i></div>
+    <div class="card"><div><p>AVG POINTS</p><h3>0</h3></div><i class="fa-solid fa-bullseye icon"></i></div>
+    <div class="card"><div><p>AVG REBOUNDS</p><h3>0</h3></div><i class="fa-solid fa-arrows-up-down-left-right icon"></i></div>
+    <div class="card"><div><p>RECORD (W-L)</p><h3>0-0</h3></div><i class="fa-solid fa-trophy icon"></i></div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="charts">
+    <div class="chart-large">
+      <h4><i class="fa-solid fa-chart-line"></i> Team Scoring by Game</h4>
+      <div class="placeholder"><i class="fa-solid fa-play"></i></div>
+    </div>
+    <div class="chart-small">
+      <h4><i class="fa-solid fa-chart-pie"></i> Win/Loss Record</h4>
+    </div>
+  </div>
+
+  <!-- LEADERBOARDS -->
+  <div class="leaders">
+    <div class="leader-card"><i class="fa-solid fa-star"></i> Top Scorers (PPG)</div>
+    <div class="leader-card"><i class="fa-solid fa-hand"></i> Top Rebounders (RPG)</div>
+    <div class="leader-card"><i class="fa-solid fa-handshake"></i> Top Assists (APG)</div>
+  </div>
+
+</main>
+
+</div>
+
+<script src="../js/admin-dashboard.js"></script>
+<script>
+const currentPage = window.location.pathname.split("/").pop();
+const sidebarLinks = document.querySelectorAll(".sidebar a");
+sidebarLinks.forEach(link => {
+  link.classList.remove("active");
+  const linkPage = link.getAttribute("href").split("/").pop();
+  if(linkPage === currentPage) link.classList.add("active");
+});
+</script>
+</body>
+</html>
