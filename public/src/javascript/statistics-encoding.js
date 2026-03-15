@@ -58,9 +58,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   });
   
-  
-  
-  
   // Load Game Stats
   async function loadStats(gameId) {
   
@@ -130,7 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   
   
-  
   // Open Modal
   addStatsBtn.addEventListener("click", () => {
   
@@ -140,14 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
   
   
   
-  
   // Close Modal
   closeModal.addEventListener("click", () => {
   
     modal.style.display = "none";
   
   });
-  
   
   
   
