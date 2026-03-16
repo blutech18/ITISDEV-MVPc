@@ -14,8 +14,11 @@ router.get('/dashboard', (req, res) => {
 });
 
 router.get("/statistics", (req, res) => {
-    res.render("pages/statistics_encoding");
-  });
+    res.render("pages/statistics-encoding", {
+        title: "Statistics Encoding",
+        user: req.session.user
+    });
+});
 
 
 module.exports = router;
