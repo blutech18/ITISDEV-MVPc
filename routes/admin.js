@@ -7,7 +7,7 @@ router.use(isAuthenticated);
 
 // Admin Dashboard route
 router.get('/dashboard', (req, res) => {
-    res.render('pages/dashboard', { 
+    res.render('pages/admin-dashboard', { 
         title: 'Green Archers Analytics - Dashboard',
         user: req.session.user
     });
