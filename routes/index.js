@@ -3,8 +3,7 @@ const router = express.Router();
 
 const { isAuthenticated } = require('../middleware/auth');
 
-
-// Dashboard route - protected, only accessible to authenticated users
+// Dashboard
 router.get('/', isAuthenticated, (req, res) => {
   res.render('pages/dashboard', { 
       title: 'Green Archers Analytics - Dashboard',
@@ -12,5 +11,12 @@ router.get('/', isAuthenticated, (req, res) => {
   });
 });
 
+// Statistics Encoding page
+router.get('/statistics-encoding', isAuthenticated, (req, res) => {
+  res.render('pages/statistics-encoding', {
+      title: 'Statistics Encoding',
+      user: req.session.user
+  });
+});
 
 module.exports = router;
