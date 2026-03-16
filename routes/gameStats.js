@@ -4,7 +4,7 @@ const gameStatsController = require('../controllers/gameStatsController');
 
 const { isAuthenticated, authorize } = require('../middleware/auth');
 
-//router.use(isAuthenticated); 
+router.use(isAuthenticated); 
 
 
 // Create a new game statistic entry
