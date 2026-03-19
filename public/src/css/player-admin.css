@@ -11,74 +11,7 @@ body {
   color: #333;
 }
 
-/* TOPBAR */
-.topbar {
-  height: 60px;
-  background: #0b5d3b;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 25px;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 18px;
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
 /* LAYOUT */
-.layout {
-  display: flex;
-  height: calc(100vh - 60px);
-}
-
-/* SIDEBAR */
-.sidebar {
-  width: 220px;
-  background: white;
-  border-right: 1px solid #ddd;
-  padding-top: 20px;
-}
-
-.sidebar ul {
-  list-style: none;
-}
-
-.sidebar a {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: #333;
-  padding: 14px 22px;
-  font-size: 14px;
-  border-radius: 8px;
-  margin: 0 10px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.sidebar a:hover {
-  background: #f1f1f1;
-}
-
-.sidebar a.active {
-  background: #0b5d3b;
-  color: white;
-}
-
-/* MAIN CONTENT */
 .main {
   flex: 1;
   padding: 25px;
@@ -91,6 +24,7 @@ body {
   justify-content: space-between;
   margin-bottom: 25px;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .dashboard-header h2 {
@@ -102,6 +36,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 /* SEARCH & FILTER */
@@ -177,6 +112,31 @@ td {
   background: #f9fafb;
 }
 
+/* Player name link */
+.player-name-link {
+  color: #0b5d3b;
+  font-weight: 600;
+  text-decoration: none;
+}
+.player-name-link:hover {
+  text-decoration: underline;
+}
+
+/* STATUS BADGES */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-Active   { background: #d4edda; color: #155724; }
+.status-Injured  { background: #fff3cd; color: #856404; }
+.status-Inactive { background: #e2e3e5; color: #383d41; }
+
 /* ACTION BUTTONS */
 .edit-btn,
 .delete-btn {
@@ -193,28 +153,18 @@ td {
   color: white;
   margin-right: 6px;
 }
+.edit-btn:hover { background: #084b2f; }
 
-.edit-btn:hover {
-  background: #084b2f;
-}
+.delete-btn { background: #e74c3c; color: white; }
+.delete-btn:hover { background: #c0392b; }
 
-.delete-btn {
-  background: #e74c3c;
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #c0392b;
-}
-
-/* Modal overlay */
-.modal {
+/* MODAL OVERLAY — hidden by default */
+.modal-overlay {
   display: none;
   position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.4);
-  display:flex;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.45);
   justify-content: center;
   align-items: center;
   z-index: 1000;
@@ -225,26 +175,28 @@ td {
   background: #fff;
   padding: 35px 30px;
   border-radius: 16px;
-  width: 450px;
-  max-width: 90%;
+  width: 500px;
+  max-width: 95%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.2);
   position: relative;
   animation: modalSlide 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-/* Modal title */
+.modal-sm { width: 380px; }
+
 .modal-content h3 {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: #0b5d3b;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
 }
 
-/* Close button */
 .modal-content .close {
   position: absolute;
   top: 15px; right: 20px;
@@ -252,27 +204,27 @@ td {
   color: #888;
   cursor: pointer;
   transition: color 0.2s;
+  line-height: 1;
 }
-.modal-content .close:hover {
-  color: #0b5d3b;
-}
+.modal-content .close:hover { color: #0b5d3b; }
 
-/* Form groups with floating labels */
+/* Form groups */
 .form-group {
   position: relative;
   display: flex;
   flex-direction: column;
-  margin-bottom: 16px;
+  flex: 1;
 }
 
 .form-group input,
 .form-group select {
-  padding: 14px 14px 14px 14px;
+  padding: 14px;
   border: 1px solid #ccc;
   border-radius: 10px;
   font-size: 14px;
   outline: none;
   transition: 0.3s all;
+  width: 100%;
 }
 
 .form-group input:focus,
@@ -295,22 +247,20 @@ td {
 
 .form-group input:focus + label,
 .form-group input:not(:placeholder-shown) + label,
-.form-group select:focus + label,
-.form-group select:not([value=""]) + label {
+.form-group select:focus + label {
   top: -8px;
   left: 10px;
   font-size: 12px;
   color: #0b5d3b;
 }
 
-/* Horizontal form rows */
 .form-row {
   display: flex;
   gap: 15px;
 }
 
-/* Submit button */
-#savePlayerBtn {
+#savePlayerBtn,
+#updatePlayerBtn {
   padding: 14px;
   background: #0b5d3b;
   color: white;
@@ -320,19 +270,192 @@ td {
   cursor: pointer;
   transition: background 0.2s;
   font-size: 15px;
+  margin-top: 8px;
 }
-#savePlayerBtn:hover {
-  background: #084b2f;
+#savePlayerBtn:hover,
+#updatePlayerBtn:hover { background: #084b2f; }
+
+.cancel-btn {
+  padding: 10px 24px;
+  background: #e2e3e5;
+  color: #333;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.delete-confirm-btn {
+  padding: 10px 24px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+.delete-confirm-btn:hover { background: #c0392b; }
+
+.alert-msg {
+  background: #fde8e8;
+  color: #c0392b;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
 }
 
-/* Animation */
 @keyframes modalSlide {
-  from { transform: translateY(-40px); opacity:0; }
-  to { transform: translateY(0); opacity:1; }
+  from { transform: translateY(-40px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Toast notification */
+.toast-msg {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  z-index: 9999;
+  animation: fadeInUp 0.3s ease;
+  max-width: calc(100vw - 60px);
+  word-wrap: break-word;
+}
+
+@keyframes fadeInUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ===== PLAYER PROFILE PAGE ===== */
+.back-link {
+  color: #0b5d3b;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; }
+
+.profile-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  flex-wrap: wrap;
+}
+
+.profile-avatar {
+  font-size: 80px;
+  color: #0b5d3b;
+  line-height: 1;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 200px;
+}
+
+.profile-info h2 {
+  font-size: 26px;
+  color: #0b5d3b;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.profile-sub {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.profile-course {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.profile-physical {
+  display: flex;
+  gap: 20px;
+}
+
+.physical-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 16px 24px;
+}
+
+.physical-label {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.physical-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0b5d3b;
+  margin-top: 4px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+  transition: transform 0.2s;
+}
+.stat-card:hover { transform: translateY(-3px); }
+
+.stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: #0b5d3b;
+}
+
+.stat-label {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-top: 4px;
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
 }
 
 /* Responsive */
-@media (max-width: 500px){
-  .modal-content { width: 90%; padding: 25px; }
+@media (max-width: 600px) {
+  .modal-content { width: 95%; padding: 25px; }
   .form-row { flex-direction: column; gap: 12px; }
+  .profile-card { flex-direction: column; }
+  .profile-physical { justify-content: center; }
 }

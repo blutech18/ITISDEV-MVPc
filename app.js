@@ -22,6 +22,19 @@ app.engine('hbs', exphbs.engine({
     extname: '.hbs',                   // File extension for Handlebars files
     layoutsDir: 'views/layouts',       // Folder for layout files
     partialsDir: 'views/partials',     // Folder for partial files/reusable components
+    helpers: {
+        eq: function (v1, v2) {
+            return v1 === v2;
+        },
+        startsWith: function (str, prefix) {
+            return str && str.startsWith(prefix);
+        },
+        formatDate: function (dateVal) {
+            if (!dateVal) return '—';
+            const d = new Date(dateVal);
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+    }
 }));
 
 app.set('view engine', 'hbs'); // Set Handlebars as the view engine
@@ -37,6 +50,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // Serve static files f
 // Make user data available in all views (for authentication status, etc.)
 app.use((req, res, next) => {
     res.locals.user = req.session.user; // Make user data available in all views
+    res.locals.activePath = req.path;   // Expose current path for sidebar highlighting
     next();
 });
 

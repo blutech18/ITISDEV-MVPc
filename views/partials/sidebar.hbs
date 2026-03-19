@@ -32,27 +32,27 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link" href="/">
+            <a class="nav-link {{#if (eq activePath '/')}}active{{/if}}" href="/">
                 <i class="fas fa-tachometer-alt"></i>Dashboard
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/api/players">
+            <a class="nav-link {{#if (startsWith activePath '/players')}}active{{/if}}" href="/players">
                 <i class="fas fa-users"></i>Players
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/api/games">
+            <a class="nav-link {{#if (startsWith activePath '/games')}}active{{/if}}" href="/games">
                 <i class="fas fa-calendar-alt"></i>Games
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/api/gameStats">
+            <a class="nav-link {{#if (startsWith activePath '/api/gameStats')}}active{{/if}}" href="/api/gameStats">
                 <i class="fas fa-chart-bar"></i>Statistics
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active" href="/api/analytics">
+            <a class="nav-link {{#if (startsWith activePath '/api/analytics')}}active{{/if}}" href="/api/analytics">
                 <i class="fas fa-file-alt"></i>Reports
             </a>
         </li>
