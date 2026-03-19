@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const upload = require("../middleware/upload");
 const playerController = require('../controllers/playerController');
 
 const { isAuthenticated, authorize } = require('../middleware/auth');
@@ -8,7 +7,8 @@ const { isAuthenticated, authorize } = require('../middleware/auth');
 router.use(isAuthenticated);
 
 // Create a new player record
-router.post('/create', authorize('admin'), upload.single("profilePhoto"), playerController.createPlayer);
+router.post('/create', authorize('Admin', 'Coach'), playerController.createPlayer);
+
 
 // Get all players
 router.get('/all-players', playerController.getAllPlayers);
@@ -32,13 +32,13 @@ router.get('/position/:position', playerController.getPlayersByPosition);
 router.get('/yearLevel/:yearLevel', playerController.getPlayersByYearLevel);
 
 // Update a player record
-router.put('/update/:id', authorize('admin'), playerController.updatePlayer);
+router.put('/update/:id', authorize('Admin', 'Coach'), playerController.updatePlayer);
 
 // Delete a player record
-router.delete('/delete/:id', authorize('admin'), playerController.deletePlayer);
+router.delete('/delete/:id', authorize('Admin', 'Coach'), playerController.deletePlayer);
 
 // Update player status (active/injured/inactive)
-router.put('/update-status/:id', authorize('admin'), playerController.updatePlayerStatus);
+router.put('/update-status/:id', authorize('Admin', 'Coach'), playerController.updatePlayerStatus);
 
 
 
