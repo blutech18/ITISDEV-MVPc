@@ -1,48 +1,63 @@
-<h1>{{player.name}}</h1>
+<link rel="stylesheet" href="/src/css/player-admin.css">
 
-<div class="profile-header">
-    <img src="{{player.photo}}" class="profile-photo">
-
-    <div>
-        <p>#{{player.number}} - {{player.position}}</p>
-        <p>Year: {{player.year}}</p>
+<div class="col-md-10 main">
+    <div class="mb-3">
+        <a href="/players" class="back-link">
+            <i class="fas fa-arrow-left me-1"></i> Back to Players
+        </a>
     </div>
+
+    <!-- Player Header Card -->
+    <div class="profile-card">
+        <div class="profile-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <div class="profile-info">
+            <h2>{{player.firstName}} {{player.lastName}}</h2>
+            <p class="profile-sub">#{{player.jerseyNumber}} &bull; {{player.position}} &bull; {{player.yearLevel}}</p>
+            {{#if player.course}}<p class="profile-course"><i class="fas fa-graduation-cap me-1"></i>{{player.course}}</p>{{/if}}
+            <span class="status-badge status-{{player.status}}">{{player.status}}</span>
+        </div>
+        <div class="profile-physical">
+            <div class="physical-item">
+                <span class="physical-label">Height</span>
+                <span class="physical-value">{{player.heightCm}} cm</span>
+            </div>
+            <div class="physical-item">
+                <span class="physical-label">Weight</span>
+                <span class="physical-value">{{player.weightKg}} kg</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <h5 class="section-title mt-4 mb-3"><i class="fas fa-chart-bar me-2"></i>Career Stats</h5>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{stats.ppg}}</div>
+            <div class="stat-label">PPG</div>
+            <div class="stat-sub">Points Per Game</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{stats.rpg}}</div>
+            <div class="stat-label">RPG</div>
+            <div class="stat-sub">Rebounds Per Game</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{stats.apg}}</div>
+            <div class="stat-label">APG</div>
+            <div class="stat-sub">Assists Per Game</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{stats.gamesPlayed}}</div>
+            <div class="stat-label">GP</div>
+            <div class="stat-sub">Games Played</div>
+        </div>
+    </div>
+
+    {{#unless stats.gamesPlayed}}
+    <div class="text-center text-muted mt-2 mb-4">
+        <i class="fas fa-info-circle me-1"></i> No game statistics recorded yet.
+    </div>
+    {{/unless}}
 </div>
-
-<div class="stats-grid">
-    <div class="card">PPG: {{stats.ppg}}</div>
-    <div class="card">RPG: {{stats.rpg}}</div>
-    <div class="card">APG: {{stats.apg}}</div>
-    <div class="card">FG%: {{stats.fg}}</div>
-</div>
-
-<div class="card wide">
-    <canvas id="playerTrend"></canvas>
-</div>
-
-<h2>Game Logs</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Game</th>
-            <th>Opponent</th>
-            <th>Points</th>
-            <th>Rebounds</th>
-            <th>Assists</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    <tbody>
-        {{#each gameLogs}}
-        <tr>
-            <td>{{this.date}}</td>
-            <td>{{this.opponent}}</td>
-            <td>{{this.points}}</td>
-            <td>{{this.rebounds}}</td>
-            <td>{{this.assists}}</td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table>

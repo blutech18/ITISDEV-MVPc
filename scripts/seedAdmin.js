@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const User = require('../models/User');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGO_URI);
+mongoose.connect(process.env.MONGODB_URI);
 
 const createAdmin = async () => {
 

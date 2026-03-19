@@ -1,29 +1,259 @@
-<h1>Players</h1>
+<link rel="stylesheet" href="/src/css/player-admin.css">
 
-<input type="text" placeholder="Search players..." class="search-input">
+<div class="col-md-10 main" id="playersPage">
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Photo</th>
-            <th>Name</th>
-            <th>Number</th>
-            <th>Position</th>
-            <th>Year</th>
-            <th>View</th>
-        </tr>
-    </thead>
+    <!-- Page Header -->
+    <div class="dashboard-header">
+        <h2><i class="fas fa-users me-2"></i>Players</h2>
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="&#128269; Search by name..." />
+            <select id="filterPosition">
+                <option value="">All Positions</option>
+                <option value="PG">PG</option>
+                <option value="SG">SG</option>
+                <option value="SF">SF</option>
+                <option value="PF">PF</option>
+                <option value="C">C</option>
+            </select>
+            <select id="filterStatus">
+                <option value="">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Injured">Injured</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+            {{#if isAdminOrCoach}}
+            <button class="add-player" id="openAddModal">
+                <i class="fas fa-plus"></i> Add Player
+            </button>
+            {{/if}}
+        </div>
+    </div>
 
-    <tbody>
-        {{#each players}}
-            <tr>
-                <td><img src="{{this.photo}}" class="player-photo"></td>
-                <td>{{this.name}}</td>
-                <td>{{this.number}}</td>
-                <td>{{this.position}}</td>
-                <td>{{this.year}}</td>
-                <td><a href="/players/{{this._id}}" class="btn-secondary">View</a></td>
-            </tr>
-        {{/each}}
-    </tbody>
-</table>
+    <!-- Players Table -->
+    <div class="table-container">
+        <table class="player-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Jersey</th>
+                    <th>Position</th>
+                    <th>Year Level</th>
+                    <th>Status</th>
+                    <th>Height (cm)</th>
+                    <th>Weight (kg)</th>
+                    {{#if isAdminOrCoach}}<th>Actions</th>{{/if}}
+                </tr>
+            </thead>
+            <tbody id="playerTableBody">
+                {{#each players}}
+                <tr
+                    data-id="{{this._id}}"
+                    data-firstname="{{this.firstName}}"
+                    data-lastname="{{this.lastName}}"
+                    data-jersey="{{this.jerseyNumber}}"
+                    data-position="{{this.position}}"
+                    data-yearlevel="{{this.yearLevel}}"
+                    data-course="{{this.course}}"
+                    data-height="{{this.heightCm}}"
+                    data-weight="{{this.weightKg}}"
+                    data-status="{{this.status}}"
+                >
+                    <td>{{@index}}</td>
+                    <td>
+                        <a href="/players/{{this._id}}" class="player-name-link">
+                            {{this.firstName}} {{this.lastName}}
+                        </a>
+                    </td>
+                    <td>{{this.jerseyNumber}}</td>
+                    <td>{{this.position}}</td>
+                    <td>{{this.yearLevel}}</td>
+                    <td>
+                        <span class="status-badge status-{{this.status}}">{{this.status}}</span>
+                    </td>
+                    <td>{{this.heightCm}}</td>
+                    <td>{{this.weightKg}}</td>
+                    {{#if ../isAdminOrCoach}}
+                    <td>
+                        <button class="edit-btn" onclick="openEditModal(this)">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="delete-btn" onclick="openDeleteModal('{{this._id}}', '{{this.firstName}} {{this.lastName}}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                    {{/if}}
+                </tr>
+                {{else}}
+                <tr><td colspan="9" class="text-center text-muted py-4">No players found.</td></tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- No results message -->
+    <div id="noResults" style="display:none;" class="text-center text-muted mt-4">
+        <i class="fas fa-search fa-2x mb-2"></i>
+        <p>No players match your search or filter.</p>
+    </div>
+</div>
+
+<!-- ===== ADD PLAYER MODAL ===== -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-content">
+        <span class="close" id="closeAddModal">&times;</span>
+        <h3>Add New Player</h3>
+        <div id="addErrorMsg" class="alert-msg" style="display:none;"></div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" id="addFirstName" placeholder=" " required>
+                <label>First Name</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addLastName" placeholder=" " required>
+                <label>Last Name</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="number" id="addJersey" placeholder=" " required min="0" max="99">
+                <label>Jersey Number</label>
+            </div>
+            <div class="form-group">
+                <select id="addPosition" required>
+                    <option value="">Position</option>
+                    <option value="PG">PG - Point Guard</option>
+                    <option value="SG">SG - Shooting Guard</option>
+                    <option value="SF">SF - Small Forward</option>
+                    <option value="PF">PF - Power Forward</option>
+                    <option value="C">C - Center</option>
+                </select>
+                <label>Position</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <select id="addYearLevel" required>
+                    <option value="">Year Level</option>
+                    <option value="Rookie">Rookie</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                </select>
+                <label>Year Level</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="addCourse" placeholder=" ">
+                <label>Course</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="number" id="addHeight" placeholder=" " required min="100" max="250">
+                <label>Height (cm)</label>
+            </div>
+            <div class="form-group">
+                <input type="number" id="addWeight" placeholder=" " required min="30" max="200">
+                <label>Weight (kg)</label>
+            </div>
+        </div>
+        <button id="savePlayerBtn" onclick="addPlayer()">
+            <i class="fas fa-save me-1"></i> Save Player
+        </button>
+    </div>
+</div>
+
+<!-- ===== EDIT PLAYER MODAL ===== -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-content">
+        <span class="close" id="closeEditModal">&times;</span>
+        <h3>Edit Player</h3>
+        <input type="hidden" id="editPlayerId">
+        <div id="editErrorMsg" class="alert-msg" style="display:none;"></div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" id="editFirstName" placeholder=" " required>
+                <label>First Name</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="editLastName" placeholder=" " required>
+                <label>Last Name</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="number" id="editJersey" placeholder=" " required min="0" max="99">
+                <label>Jersey Number</label>
+            </div>
+            <div class="form-group">
+                <select id="editPosition" required>
+                    <option value="">Position</option>
+                    <option value="PG">PG - Point Guard</option>
+                    <option value="SG">SG - Shooting Guard</option>
+                    <option value="SF">SF - Small Forward</option>
+                    <option value="PF">PF - Power Forward</option>
+                    <option value="C">C - Center</option>
+                </select>
+                <label>Position</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <select id="editYearLevel" required>
+                    <option value="">Year Level</option>
+                    <option value="Rookie">Rookie</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                </select>
+                <label>Year Level</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="editCourse" placeholder=" ">
+                <label>Course</label>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <input type="number" id="editHeight" placeholder=" " required min="100" max="250">
+                <label>Height (cm)</label>
+            </div>
+            <div class="form-group">
+                <input type="number" id="editWeight" placeholder=" " required min="30" max="200">
+                <label>Weight (kg)</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <select id="editStatus">
+                <option value="Active">Active</option>
+                <option value="Injured">Injured</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+            <label>Status</label>
+        </div>
+        <button id="updatePlayerBtn" onclick="updatePlayer()">
+            <i class="fas fa-save me-1"></i> Update Player
+        </button>
+    </div>
+</div>
+
+<!-- ===== DELETE CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-content modal-sm">
+        <span class="close" id="closeDeleteModal">&times;</span>
+        <h3>Delete Player</h3>
+        <p id="deleteConfirmText" class="text-center mb-4"></p>
+        <input type="hidden" id="deletePlayerId">
+        <div class="d-flex gap-2 justify-content-center">
+            <button class="cancel-btn" id="closeDeleteModal2">Cancel</button>
+            <button class="delete-confirm-btn" onclick="confirmDelete()">
+                <i class="fas fa-trash me-1"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast-msg" style="display:none;"></div>
+
+<script src="/src/javascript/player-admin.js"></script>
