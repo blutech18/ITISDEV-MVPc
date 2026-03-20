@@ -6,7 +6,6 @@ const { isAuthenticated, authorize } = require('../middleware/auth');
 
 router.use(isAuthenticated); 
 
-
 // Create a new game statistic entry
 router.post('/create', gameStatsController.createGameStats);
 
@@ -22,10 +21,8 @@ router.get('/game/:gameId', gameStatsController.getStatsByGameId);
 // Get game stats by playerId 
 router.get('/player/:playerId', gameStatsController.getStatsByPlayerId);
 
-// Get all game stats - returns all game stats for all players and games (useful for analytics and admin management)
+// Get all game stats
 router.get('/all', gameStatsController.getAllGameStats);
 
-
-
-// Export the router to be used in app.js
+// Export the router
 module.exports = router;

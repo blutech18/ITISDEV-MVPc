@@ -1,10 +1,11 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Player = require('../models/Player');
 const GameStats = require('../models/GameStats');
 const Game = require('../models/Game');
 const Tournament = require('../models/Tournament');
-const mongoose = require('mongoose');
+const User = require('../models/User');
 
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -45,7 +46,7 @@ router.get('/players', isAuthenticated, async (req, res) => {
 router.get('/games', isAuthenticated, async (req, res) => {
   try {
     const games = await Game.find()
-      .populate('tournament', 'name league season')
+      .populate('tournament', 'name league season', {lean: true})
       .sort({ gameDate: -1 })
       .lean();
     const tournaments = await Tournament.find().sort({ startDate: -1 }).lean();
@@ -63,6 +64,7 @@ router.get('/games', isAuthenticated, async (req, res) => {
     res.status(500).send('Error loading games page');
   }
 });
+
 // Player profile page
 router.get('/players/:id', isAuthenticated, async (req, res) => {
   try {
@@ -86,7 +88,7 @@ router.get('/players/:id', isAuthenticated, async (req, res) => {
     const s = stats[0] || { gamesPlayed: 0, totalPoints: 0, totalRebounds: 0, totalAssists: 0 };
     const gp = s.gamesPlayed || 1;
 
-    res.render('pages/player_profile', {
+    res.render('pages/player-profile', {
       title: `${player.firstName} ${player.lastName}`,
       player,
       stats: {
@@ -100,6 +102,25 @@ router.get('/players/:id', isAuthenticated, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Error loading player profile');
+  }
+});
+
+// Get user profile
+router.get('/user-profile', isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.session.user.id; // Get user ID from session
+    const user = await User.findById(userId).select('-password').lean(); // Exclude password field
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.status(200).render('pages/user-profile', {
+      title: `${user.username} profile`,
+      user
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user profile', error: error.message });
   }
 });
 
