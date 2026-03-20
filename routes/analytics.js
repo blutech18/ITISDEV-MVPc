@@ -6,6 +6,11 @@ const { isAuthenticated, authorize } = require('../middleware/auth');
 
 router.use(isAuthenticated);
 
+// ── Dashboard ────────────────────────────────────────────────
+// GET /api/analytics/dashboard
+// Returns all top cards, charts, and leaderboards data
+router.get('/dashboard', analyticsController.getDashboardData);
+
 // ── Box Score ──────────────────────────────────────────────
 // GET /api/analytics/boxscore/:gameId
 // Returns full box score for a single game (all player stats)
