@@ -92,8 +92,8 @@ const gameSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ['NOT_STARTED', 'PLAYING', 'PAUSED', 'ENDED'],
-      default: 'NOT_STARTED'
+      enum: ['NOT_STARTED', 'PLAYING', 'PAUSED', 'ENDED', 'Scheduled', 'Completed', 'Cancelled'],
+      default: 'Scheduled'
     },
     
     createdBy: {
