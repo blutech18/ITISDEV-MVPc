@@ -106,7 +106,7 @@ async function updateStatsForEvent(event, reverse = false) {
 // Create a new game
 exports.createGame = async (req, res) => {
     try { 
-        const { opponent, opponentPlayers, tournament, venue, gameDate, startTime, status, teamScore, opponentScore } = req.body;
+        const { opponent, opponentPlayers, tournament, venue, gameDate, startTime, status, teamScore, opponentScore, currentPeriod, gameClock, quarterScores } = req.body;
         if (!opponent) return res.status(400).json({ message: 'Opponent name required' });
 
         // For live game tracking (requires opponent players)
@@ -130,7 +130,16 @@ exports.createGame = async (req, res) => {
             startTime: startTime || new Date(),
             teamScore: teamScore || 0,
             opponentScore: opponentScore || 0,
-            status: status || 'Scheduled'
+            status: status || 'Scheduled',
+            currentPeriod: currentPeriod || 1,
+            gameClock: gameClock || '10:00',
+            quarterScores: quarterScores || {
+                q1: { team: 0, opponent: 0 },
+                q2: { team: 0, opponent: 0 },
+                q3: { team: 0, opponent: 0 },
+                q4: { team: 0, opponent: 0 },
+                overtimes: []
+            }
         });
 
         // Calculate result if scores provided
@@ -818,7 +827,9 @@ exports.updateGame = async (req, res) => {
             quarterScores,
             status,
             teamScore,
-            opponentScore
+            opponentScore,
+            currentPeriod,
+            gameClock
         } = req.body;
 
         // Update fields if they are provided in the request body
@@ -826,9 +837,14 @@ exports.updateGame = async (req, res) => {
         if (opponent) game.opponent = opponent;
         if (tournament) game.tournament = tournament;
         if (startTime) game.startTime = startTime;
-        if (quarterScores) game.quarterScores = quarterScores;
+        if (quarterScores) {
+            game.quarterScores = quarterScores;
+            game.markModified('quarterScores');
+        }
         if (venue) game.venue = venue;
         if (status) game.status = status;
+        if (currentPeriod !== undefined) game.currentPeriod = currentPeriod;
+        if (gameClock) game.gameClock = gameClock;
 
         // Update scores if provided
         if (teamScore !== undefined) game.teamScore = teamScore;
