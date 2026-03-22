@@ -85,12 +85,12 @@
                         <span class="status-badge status-{{this.status}}">{{this.status}}</span>
                     </td>
                     {{#if ../isAdminOrCoach}}
-                    <td>
+                    <td style="white-space: nowrap;">
                         <button class="view-btn" onclick="openViewModal(this)">
-                            <i class="fas fa-eye"></i> View
+                            <i class="fas fa-eye" style="margin-right: 4px;"></i> View
                         </button>
                         <button class="edit-btn" onclick="openEditModal(this)">
-                            <i class="fas fa-edit"></i> Edit
+                            <i class="fas fa-edit" style="margin-right: 4px;"></i> Edit
                         </button>
                         <button class="delete-btn" onclick="openDeleteModal('{{this._id}}', '{{this.opponent}}')">
                             <i class="fas fa-trash"></i>
