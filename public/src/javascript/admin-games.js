@@ -64,10 +64,11 @@ document.getElementById('openAddModal')?.addEventListener('click', () => {
 });
 document.getElementById('closeAddModal')?.addEventListener('click', () => closeModal('addModal'));
 document.getElementById('closeEditModal')?.addEventListener('click', () => closeModal('editModal'));
+document.getElementById('closeViewModal')?.addEventListener('click', () => closeModal('viewModal'));
 document.getElementById('closeDeleteModal')?.addEventListener('click', () => closeModal('deleteModal'));
 document.getElementById('cancelDeleteBtn')?.addEventListener('click', () => closeModal('deleteModal'));
 
-['addModal', 'editModal', 'deleteModal'].forEach(id => {
+['addModal', 'editModal', 'viewModal', 'deleteModal'].forEach(id => {
     document.getElementById(id)?.addEventListener('click', function (e) {
         if (e.target === this) closeModal(id);
     });
@@ -160,6 +161,52 @@ async function addGame() {
         errEl.textContent = 'Network error. Please try again.';
         errEl.style.display = 'block';
     }
+}
+
+// ----- VIEW GAME -----
+function openViewModal(btn) {
+    const row = btn.closest('tr');
+    const gameId = row.dataset.id;
+    
+    // Fetch full game data to populate view modal
+    fetch(`/api/games/${gameId}`)
+        .then(res => res.json())
+        .then(data => {
+            const game = data.game;
+            
+            // Format date and time
+            const gameDate = new Date(game.gameDate);
+            const startTime = new Date(game.startTime || game.gameDate);
+            
+            document.getElementById('viewTournament').textContent = 
+                game.tournament ? `${game.tournament.name} (${game.tournament.league} · S${game.tournament.season})` : '—';
+            document.getElementById('viewOpponent').textContent = game.opponent || '—';
+            document.getElementById('viewVenue').textContent = game.venue || '—';
+            document.getElementById('viewDate').textContent = gameDate.toLocaleDateString();
+            document.getElementById('viewStartTime').textContent = startTime.toLocaleTimeString();
+            document.getElementById('viewStatus').textContent = game.status || '—';
+            document.getElementById('viewCurrentPeriod').textContent = game.currentPeriod || 1;
+            document.getElementById('viewGameClock').textContent = game.gameClock || '10:00';
+            document.getElementById('viewTeamScore').textContent = game.teamScore || 0;
+            document.getElementById('viewOppScore').textContent = game.opponentScore || 0;
+            
+            // Quarter scores
+            const qs = game.quarterScores || {};
+            document.getElementById('viewQ1Team').textContent = qs.q1?.team || 0;
+            document.getElementById('viewQ1Opp').textContent = qs.q1?.opponent || 0;
+            document.getElementById('viewQ2Team').textContent = qs.q2?.team || 0;
+            document.getElementById('viewQ2Opp').textContent = qs.q2?.opponent || 0;
+            document.getElementById('viewQ3Team').textContent = qs.q3?.team || 0;
+            document.getElementById('viewQ3Opp').textContent = qs.q3?.opponent || 0;
+            document.getElementById('viewQ4Team').textContent = qs.q4?.team || 0;
+            document.getElementById('viewQ4Opp').textContent = qs.q4?.opponent || 0;
+            
+            openModal('viewModal');
+        })
+        .catch(err => {
+            console.error('Error loading game data:', err);
+            showToast('Error loading game data', true);
+        });
 }
 
 // ----- EDIT GAME -----
