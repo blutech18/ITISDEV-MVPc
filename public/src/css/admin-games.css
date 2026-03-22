@@ -267,7 +267,20 @@ td { padding: 16px; border-bottom: 1px solid #eee; font-size: 14px; vertical-ali
 .result.Win  { background: #d4edda; color: #155724; }
 .result.Loss { background: #f8d7da; color: #721c24; }
 
-/* Edit / Delete action buttons */
+/* View / Edit / Delete action buttons */
+.view-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-right: 6px;
+    transition: background 0.2s;
+}
+.view-btn:hover { background: #2980b9; }
+
 .edit-btn {
     background: #0b5d3b;
     color: white;

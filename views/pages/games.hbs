@@ -86,6 +86,9 @@
                     </td>
                     {{#if ../isAdminOrCoach}}
                     <td>
+                        <button class="view-btn" onclick="openViewModal(this)">
+                            <i class="fas fa-eye"></i> View
+                        </button>
                         <button class="edit-btn" onclick="openEditModal(this)">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -360,6 +363,115 @@
                 <i class="fas fa-save me-1"></i> Update Game
             </button>
         </form>
+    </div>
+</div>
+
+<!-- ===== VIEW GAME MODAL ===== -->
+<div class="modal" id="viewModal">
+    <div class="modal-content">
+        <span class="close" id="closeViewModal">&times;</span>
+        <h3>Game Details</h3>
+        <div class="view-details" style="padding: 1rem 0;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Tournament</label>
+                    <p id="viewTournament" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Opponent Team</label>
+                    <p id="viewOpponent" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Venue</label>
+                    <p id="viewVenue" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Game Date</label>
+                    <p id="viewDate" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Start Time</label>
+                    <p id="viewStartTime" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Status</label>
+                    <p id="viewStatus" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Current Period</label>
+                    <p id="viewCurrentPeriod" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Game Clock</label>
+                    <p id="viewGameClock" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">—</p>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Team Score</label>
+                    <p id="viewTeamScore" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; font-weight: bold;">—</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Opponent Score</label>
+                    <p id="viewOppScore" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px; font-weight: bold;">—</p>
+                </div>
+            </div>
+
+            <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; font-size: 0.95rem;">Quarter Scores</h4>
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q1 Team</label>
+                    <p id="viewQ1Team" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q1 Opponent</label>
+                    <p id="viewQ1Opp" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q2 Team</label>
+                    <p id="viewQ2Team" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q2 Opponent</label>
+                    <p id="viewQ2Opp" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q3 Team</label>
+                    <p id="viewQ3Team" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q3 Opponent</label>
+                    <p id="viewQ3Opp" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q4 Team</label>
+                    <p id="viewQ4Team" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+                <div class="form-group">
+                    <label style="position: static; font-weight: 600; margin-bottom: 0.25rem;">Q4 Opponent</label>
+                    <p id="viewQ4Opp" style="margin: 0; padding: 0.5rem; background: #f5f5f5; border-radius: 4px;">0</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
